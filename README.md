@@ -11,21 +11,17 @@ Desenvolvimento de uma API RESTful para obter o produtor com maior intervalo ent
 * Carregamento automático dos dados contidos em arquivo CSV, em um processo iniciado junto com a aplicação utilizando Spring Batch.
 * Teste unitário executar o JUnit Test.
 
+# Configurações
+Por padrão a aplicação está configurada com o servlet.contextPath=/api para alterá-lo abra o arquivo application.properties e altere o valor da propriedade.
 
-# Recursos Providos
+# Context
+server.servlet.contextPath=/api
 
-O projeto fornece e integra testes que aceitará a seguinte solicitação para o método:
+# EndPoints
+Para o REST disponível inicie a aplicação e acesse: http://localhost:8080/api/swagger-ui.html#/
 
-HTTP GET em: http://localhost:8080/movies/awardsinterval
-
-### Direcionamento para execução dos testes:
-
-1 - Com o servidor desligado acessar a classe "DesafioFilmesApplicationTests" presente dentro do diretório
-"src/test/java/br/com/desafiofilmes"
+# Direcionamento para execução dos testes:
+Para executar os testes abra a classe DesafioFilmesApplicationTests.java, clique em Run -> Run As -> JUnit Test. 
+Isso fará com que o teste de integração implementado seja executado.
 
 
-### URL Disponíveis
-
-1 - Banco de Dados H2: http://localhost:8080/h2-console (JDBC URL: jdbc:h2:~/desafiocsv, Usuário: sa, Senha: )
-
-2 - URL do Endpoint: http://localhost:8080/movies/awardsinterval
