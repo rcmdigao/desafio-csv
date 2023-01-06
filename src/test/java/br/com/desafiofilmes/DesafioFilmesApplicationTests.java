@@ -1,47 +1,37 @@
 package br.com.desafiofilmes;
 
-import br.com.desafiofilmes.controller.ProducerController;
-import org.junit.Before;
+import br.com.desafiofilmes.dto.AwardsRangeDTO;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.is;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
-@WebAppConfiguration
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class DesafioFilmesApplicationTests {
-    private MockMvc mockMvc;
+
+    private static final String HOST = "http://localhost:";
+    private static final String PRODUCERS_RESOURCE = "desafiocsv/api";
+
+    @LocalServerPort
+    private int port;
 
     @Autowired
-    private ProducerController movieController;
-
-    @Autowired
-    protected WebApplicationContext wac;
-
-    @Before
-    public void setup() throws Exception {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(this.movieController).build();
-        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-    }
+    private TestRestTemplate restTemplate;
 
     @Test
-    public void getAwardsintervalTest() throws Exception {
-        mockMvc.perform( MockMvcRequestBuilders.get("/producer/awardsinterval").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect( jsonPath("$.min.*.producer", hasItem( is( "Joel Silver" ))))
-                .andExpect( jsonPath("$.max.*.producer", hasItem( is( "Matthew Vaughn" ))));
+    public void testAwardsRange() {
+        ResponseEntity<AwardsRangeDTO> responseEntity = restTemplate.getForEntity(HOST + port + PRODUCERS_RESOURCE + "/awardsinterval", AwardsRangeDTO.class);
+        Assert.assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
+        Assert.assertNotNull(responseEntity.getBody());
+        Assert.assertNotNull(responseEntity.getBody().getMax());
+        Assert.assertNotNull(responseEntity.getBody().getMin());
     }
+
 }

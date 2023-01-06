@@ -1,44 +1,54 @@
 package br.com.desafiofilmes.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 @Entity
-@Table(name="MOVIE")
-@Getter
-@Setter
-@ToString
-public class Movie {
-	
+@Table(name = "movie")
+@NoArgsConstructor
+@Data
+public class Movie implements Serializable {
+
 	@Id
-	@Column(name="ID_MOVIE")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", updatable = false)
 	private Long id;
-	
-	@Column(name="YEAR", nullable=false)
-	private Integer year;
-	
-	@Column(name="TITLE", nullable=false)
+
+	@NotNull
+	@Column(name = "year", length = 255, nullable = false)
+	private Long year;
+
+	@NotEmpty
+	@Size(max = 255)
+	@Column(name = "title", length = 255, nullable = false)
 	private String title;
-	
-	@Column(name="IS_WINNER", nullable=false)
+
+	@NotEmpty
+	@Size(max = 255)
+	@Column(name = "studio", length = 255, nullable = false)
+	private String studio;
+
+	@NotEmpty
+	@Size(max = 255)
+	@Column(name = "producer", length = 255, nullable = false)
+	private String producer;
+
+	@NotNull
+	@Column(name = "winner", nullable = false)
 	private Boolean winner;
 
-	@OneToMany(mappedBy="movie", cascade=CascadeType.ALL, orphanRemoval = true, fetch=FetchType.EAGER)
-	private Set<MovieStudio> studios = new HashSet<>();
-	
-	@OneToMany(mappedBy="movie", cascade=CascadeType.ALL, orphanRemoval = true, fetch=FetchType.EAGER)
-	private Set<MovieProducer> producers = new HashSet<>();
-
-	public Movie() {}
-
-	public Movie(Integer year, String title, String winner) {
+	public Movie(Long year, String title, String studio, String producer, Boolean winner) {
 		this.year = year;
 		this.title = title;
-		this.winner = (winner != null && "yes".equalsIgnoreCase(winner)) ;
+		this.studio = studio;
+		this.producer = producer;
+		this.winner = winner;
 	}
-
 }
